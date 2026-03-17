@@ -1,63 +1,168 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Contagem para a viagem</title>
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
-      height: 100vh;
+      min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
       font-family: Arial, sans-serif;
-      background: #f5f7fa;
-      color: #222;
       text-align: center;
+      color: white;
+      background-image: url("fundo.jpg");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      position: relative;
+      overflow: hidden;
     }
+
+    .overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+    }
+
     .box {
-      padding: 40px;
-      border-radius: 20px;
-      background: white;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      position: relative;
+      z-index: 1;
+      background: rgba(255, 255, 255, 0.14);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 32px 24px;
+      border-radius: 24px;
+      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.25);
+      width: min(92%, 700px);
     }
-    h1 {
-      font-size: 2rem;
-      margin-bottom: 10px;
+
+    .topo {
+      font-size: 1.2rem;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+      opacity: 0.95;
     }
-    #contador {
-      font-size: 3rem;
+
+    .titulo {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 700;
+      margin: 0 0 10px;
+    }
+
+    .subtitulo {
+      font-size: clamp(1rem, 2.5vw, 1.35rem);
+      margin-bottom: 28px;
+      opacity: 0.95;
+    }
+
+    .contador {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .bloco {
+      background: rgba(255, 255, 255, 0.16);
+      border-radius: 18px;
+      padding: 20px 10px;
+    }
+
+    .numero {
+      font-size: clamp(2rem, 6vw, 3.2rem);
       font-weight: bold;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .label {
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      opacity: 0.9;
+    }
+
+    .frase-final {
+      font-size: 1.1rem;
+      margin-top: 12px;
+      opacity: 0.95;
+    }
+
+    @media (max-width: 640px) {
+      .contador {
+        grid-template-columns: 1fr;
+      }
+
+      .box {
+        padding: 24px 18px;
+      }
     }
   </style>
 </head>
 <body>
+  <div class="overlay"></div>
+
   <div class="box">
-    <h1>Faltam</h1>
-    <div id="contador"></div>
-    <h1>para a viagem ✈️</h1>
+    <div class="topo">Contagem decrescente</div>
+    <h1 class="titulo">Viagem para os EUA 🇺🇸</h1>
+    <div class="subtitulo">A aventura está quase a começar ✈️</div>
+
+    <div class="contador">
+      <div class="bloco">
+        <div class="numero" id="dias">0</div>
+        <div class="label">Dias</div>
+      </div>
+      <div class="bloco">
+        <div class="numero" id="horas">0</div>
+        <div class="label">Horas</div>
+      </div>
+      <div class="bloco">
+        <div class="numero" id="minutos">0</div>
+        <div class="label">Minutos</div>
+      </div>
+    </div>
+
+    <div class="frase-final" id="mensagem">Estamos quase lá.</div>
   </div>
 
   <script>
-    const dataViagem = new Date("2026-04-15");
-    const hoje = new Date();
+    const dataViagem = new Date("2026-04-15T00:00:00");
 
-    hoje.setHours(0, 0, 0, 0);
-    dataViagem.setHours(0, 0, 0, 0);
+    function atualizarContador() {
+      const agora = new Date();
+      const diferenca = dataViagem - agora;
 
-    const diferenca = dataViagem - hoje;
-    const dias = Math.ceil(diferenca / (1000 * 60 * 60 * 24));
+      const mensagem = document.getElementById("mensagem");
 
-    const contador = document.getElementById("contador");
+      if (diferenca <= 0) {
+        document.getElementById("dias").textContent = "0";
+        document.getElementById("horas").textContent = "0";
+        document.getElementById("minutos").textContent = "0";
+        mensagem.textContent = "É hoje! Boa viagem 🇺🇸✈️";
+        return;
+      }
 
-    if (dias > 0) {
-      contador.textContent = dias + " dias";
-    } else if (dias === 0) {
-      contador.textContent = "É hoje!";
-    } else {
-      contador.textContent = "A viagem já aconteceu";
+      const dias = Math.floor(diferenca / (1000 * 60 * 60 * 24));
+      const horas = Math.floor((diferenca / (1000 * 60 * 60)) % 24);
+      const minutos = Math.floor((diferenca / (1000 * 60)) % 60);
+
+      document.getElementById("dias").textContent = dias;
+      document.getElementById("horas").textContent = horas;
+      document.getElementById("minutos").textContent = minutos;
+      mensagem.textContent = "Cada minuto conta para a chegada.";
     }
+
+    atualizarContador();
+    setInterval(atualizarContador, 1000);
   </script>
 </body>
 </html>
