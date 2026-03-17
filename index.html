@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contagem para a viagem</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: Arial, sans-serif;
+      background: #f5f7fa;
+      color: #222;
+      text-align: center;
+    }
+    .box {
+      padding: 40px;
+      border-radius: 20px;
+      background: white;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+    #contador {
+      font-size: 3rem;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>Faltam</h1>
+    <div id="contador"></div>
+    <h1>para a viagem ✈️</h1>
+  </div>
+
+  <script>
+    const dataViagem = new Date("2026-04-15");
+    const hoje = new Date();
+
+    hoje.setHours(0, 0, 0, 0);
+    dataViagem.setHours(0, 0, 0, 0);
+
+    const diferenca = dataViagem - hoje;
+    const dias = Math.ceil(diferenca / (1000 * 60 * 60 * 24));
+
+    const contador = document.getElementById("contador");
+
+    if (dias > 0) {
+      contador.textContent = dias + " dias";
+    } else if (dias === 0) {
+      contador.textContent = "É hoje!";
+    } else {
+      contador.textContent = "A viagem já aconteceu";
+    }
+  </script>
+</body>
+</html>
